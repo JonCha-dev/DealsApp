@@ -13,21 +13,22 @@ struct SearchView: View {
     
     var body: some View {
         NavigationView {
-            ZStack {
+            ZStack(alignment: .topLeading) {
                 List {
                     ForEach(searchResults) { deal in
-                        NavigationLink {
-                            DealView(deal:deal)
-                        } label: {
                             DealCell(deal:deal)
-                        }
-                        .listRowBackground(Color(red:0.671, green:0.624, blue:0.616))
+                            .background(NavigationLink("", destination: DealView(deal:deal)).opacity(0))
+                            .listRowBackground(Color("AmazonGray"))
                     }
                 }
-                .scrollContentBackground(.hidden)
                 .navigationTitle("Deals")
+                
+                Rectangle()
+                    .fill(Color("AmazonDBlue"))
+                    .frame(height:100)
+                    .ignoresSafeArea(.all)
             }
-            .background(Color(red:0.82, green:0.745, blue:0.69))
+            .background(Color("AmazonGray"))
         }
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search for a product")
     }
@@ -41,10 +42,10 @@ struct SearchView: View {
     }
 }
 
-/*
+
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchView()
+        SearchView(viewModel:HomeViewModel(), searchText:"")
     }
 }
-*/
+

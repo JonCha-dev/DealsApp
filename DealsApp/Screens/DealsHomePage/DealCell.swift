@@ -31,21 +31,22 @@ struct DealCell: View {
                     .bold()
                     .font(.system(size: 20))
                     .padding([.bottom], 5)
-                    .foregroundColor(Color(red:0.22, green:0.247, blue: 0.318))
+                    .foregroundColor(Color("AmazonDBlue"))
                 Text("\"" + deal.description + "\"")
                     .font(.system(size:14))
                     .italic()
                     .padding([.bottom], 10)
-                    .foregroundColor(Color(red:0.867, green:0.859, blue:0.945))
+                    .foregroundColor(Color("AmazonLBlue"))
                 Text("$" + String(format: "%.2f", Float(deal.price)/100))
                     .font(.system(size:25))
-                    .foregroundColor(Color(red:0.22, green:0.247, blue: 0.318))
+                    .foregroundColor(Color("AmazonDBlue"))
             }
         }
         .frame(maxWidth: 350)
         .padding()
-        .background(Color(red:0.671, green:0.624, blue:0.616))
-        .cornerRadius(30)
+        .background(Color.white)
+        .cornerRadius(10)
+        .border(Color.black)
     }
 }
 

@@ -15,12 +15,12 @@ struct HomeView: View {
             VStack(spacing: -40) {
                 ZStack(alignment: .topLeading) {
                     Rectangle()
-                        .fill(Color(red:0.235, green:0.31, blue:0.463))
+                        .fill(Color("AmazonDBlue"))
                         .frame(height:200)
                         .ignoresSafeArea(.all)
                     Text("Some Deals App")
                         .font(.system(size:35))
-                        .foregroundColor(Color(red:0.867, green:0.859, blue:0.945))
+                        .foregroundColor(Color("AmazonGray"))
                         .bold()
                         .offset(x: 10)
                 }
@@ -30,25 +30,25 @@ struct HomeView: View {
                     HStack(spacing: 10) {
                         Image(systemName: "magnifyingglass")
                         Text("Search for deals")
-                            .foregroundStyle(Color(red:0.22, green:0.247, blue: 0.318))
+                            .foregroundStyle(Color("AmazonDBlue"))
                     }
                     .offset(x:-90)
                     .padding(.horizontal, 100)
                     .padding(.vertical, 15)
-                    .background(Color(red:0.867, green:0.859, blue:0.945))
+                    .background(Color("AmazonGray"))
                     .cornerRadius(15)
                 }
                 .offset(y:-95)
                 ScrollView {
                     Text("Recommended Deals")
                         .font(.system(size:30))
-                        .foregroundColor(Color(red:0.22, green:0.247, blue: 0.318))
+                        .foregroundColor(Color("AmazonDBlue"))
                         .bold()
                     recommendListView(viewModel.data)
                 }
                 Spacer()
             }
-            .background(Color(red:0.82, green:0.745, blue:0.69))
+            .background(Color("AmazonGray"))
             .buttonStyle(PlainButtonStyle())
         }
         .onAppear {
