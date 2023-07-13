@@ -15,13 +15,22 @@ struct DataResponse:Decodable {
     let deals:[Deal]
 }
 
-struct Deal:Decodable, Identifiable {
+struct Deal:Decodable, Identifiable, Hashable {
+    static func == (lhs: Deal, rhs: Deal) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
     let id:String
     let title:String // product name
     let url:String // product url
     let price:Int
     let description:String
     let product:Product
+    let likes:[Like]
     let comments:[Comment]
 }
 
@@ -29,6 +38,10 @@ struct Product:Decodable {
     let availability:String
     let image:String
     let description:String
+}
+
+struct Like:Decodable, Identifiable {
+    let id:String
 }
 
 struct Comment:Decodable, Identifiable {
@@ -50,8 +63,9 @@ struct mock {
                                product: Product(availability: "IN STOCK",
                                                 image: "https://media.officedepot.com/images/t_extralarge%2Cf_auto/products/9025577/9025577_o01.jpg",
                                                 description: "Enjoy endless fun when you bring along the My Arcade All-Star Stadium Pico Player. This game console features an ergonomic design and a full-color 2\" screen with a built-in speaker. It includes 7 officially licensed Jaleco titles and 100 retro-style bonus games for versatile fun.  Handheld console with an ergonomic and compact design.  Offers 7 officially licensed Jaleco titles including BASES LOADED 1, 2, 3, and 4, GOAL!, RACKET ATTACK and HOOPS.  Bonus 100 retro-style games for added fun.  Full-color 2\" screen.  Built-in speaker with volume control.  Portable console is ideal for long road trips, commuting to work, travel and more.  Powered by 3 AAA batteries (not included).  Includes a user guide."),
-                               comments: [Comment(text: "This deal is fantastic! I used it and saved a lot of money. Thanks for sharing!",
+                                likes: [Like(id:"1"), Like(id:"2"), Like(id:"7")],
+                                comments: [Comment(text: "This deal is fantastic! I used it and saved a lot of money. Thanks for sharing!",
                                                   user: CommentUser(name: "John Doe")),
-                                          Comment(text: "This deal is fantastic! I used it and saved a lot of money. Thanks for sharing!",
-                                                  user: CommentUser(name: "Not John Doe"))])
+                                          Comment(text: "This deal is fantastic! I used it and saved a lot of money. Thanks for sharing! This deal is fantastic! This deal is fantastic!",
+                                                  user: CommentUser(name: "Jane Smith"))])
 }

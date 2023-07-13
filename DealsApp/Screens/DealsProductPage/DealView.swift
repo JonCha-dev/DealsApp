@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct DealView: View {
-    @State var deal:Deal
+    let deal:Deal
+    @ObservedObject var viewModel:HomeViewModel
+    @Binding var path: NavigationPath
     
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -27,28 +29,9 @@ struct DealView: View {
                             .aspectRatio(contentMode:.fit)
                             .cornerRadius(10)
                     }
-                    Text("\(deal.title) (\(deal.product.availability))")
-                        .bold()
-                        .font(.system(size: 30))
-                        .padding([.leading, .trailing, .bottom])
-                    Text("Sale Price: $" + String(format: "%.2f", Float(deal.price)/100))
-                        .bold()
-                        .font(.system(size:45))
-                        .padding([.leading])
                     
-                    Color.black.frame(height: 5 / UIScreen.main.scale)
-                        .padding([.top, .bottom], 40)
-                    
-                    Text("Description:")
-                        .font(.system(size: 25))
-                        .bold()
-                        .padding([.leading])
-                    Text(deal.product.description)
-                        .italic()
-                        .padding([.leading, .trailing])
-                    
-                    Color.black.frame(height: 5 / UIScreen.main.scale)
-                        .padding([.top, .bottom], 40)
+                    dealTitleView(deal)
+                    dealDescView(deal)
                     
                     Text("Comments:")
                         .font(.system(size: 25))
@@ -56,9 +39,34 @@ struct DealView: View {
                         .padding([.leading])
                     commentListView(deal.comments)
                         .frame(maxWidth:.infinity)
+                    
+                    Text("Users also liked:")
+                        .font(.system(size:25))
+                        .bold()
+                        .padding([.top, .leading])
+                
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            likeListView(deal, viewModel.data)
+                        }
+                    }
+                    .padding([.leading])
+                    
+                    HStack {
+                        Spacer()
+                        Button {
+                            path.removeLast(path.count)
+                        } label: {
+                            Text("Back to homepage.")
+                                .font(.system(size:20))
+                                .foregroundColor(Color("AmazonOrange"))
+                        }
+                        Spacer()
+                    }
+                    
+                    
                 }
                 .foregroundColor(Color("AmazonDBlue"))
-                .background(Color("AmazonGray"))
             }
             
             Rectangle()
@@ -66,17 +74,51 @@ struct DealView: View {
                 .frame(height:100)
                 .ignoresSafeArea(.all)
         }
+        .background(Color("AmazonGray"))
+    }
+    
+    var divider: some View = Color.black.frame(height: 5 / UIScreen.main.scale)
+        .padding([.top, .bottom], 40)
+    
+    private func dealTitleView(_ deal: Deal) -> some View {
+        VStack(alignment: .leading) {
+            Text("\(deal.title) (\(deal.product.availability))")
+                .bold()
+                .font(.system(size: 30))
+                .padding([.leading, .trailing, .bottom])
+            Text("Sale Price: $" + String(format: "%.2f", Float(deal.price)/100))
+                .bold()
+                .font(.system(size:45))
+                .padding([.leading])
+            
+            divider
+        }
+    }
+    
+    private func dealDescView(_ deal: Deal) -> some View {
+        VStack(alignment: .leading) {
+            Text("Description:")
+                .font(.system(size: 25))
+                .bold()
+                .padding([.leading])
+            Text(deal.product.description)
+                .italic()
+                .padding([.leading, .trailing])
+            
+            divider
+        }
     }
     
     private func commentListView(_ comments: [Comment]) -> some View {
         ForEach(comments) { comment in
             HStack(spacing: 10) {
-                Spacer()
                 Text(comment.user.name)
                     .font(.system(size: 15))
                     .frame(width:75)
+                    .padding([.leading])
                 Color.black.frame(width: 5 / UIScreen.main.scale)
                 Text(comment.text)
+                    .frame(width:250)
                 Spacer()
             }
             .padding([.top, .bottom], 10)
@@ -84,10 +126,22 @@ struct DealView: View {
             .border(Color.black)
         }
     }
-}
-
-struct DealView_Previews: PreviewProvider {
-    static var previews: some View {
-        DealView(deal:mock.data)
+    
+    private func likeListView(_ deal: Deal, _ deals: [Deal]) -> some View {
+        ForEach((deal.likes).filter{ $0.id != deal.id } ) { like in
+            Button {
+                path.append(deals[Int(like.id)! - 1])
+            } label: {
+                DealCell(deal: deals[Int(like.id)! - 1] )
+            }
+        }
     }
 }
+
+/*
+struct DealView_Previews: PreviewProvider {
+    static var previews: some View {
+        DealView(deal:mock.data, viewModel: HomeViewModel())
+    }
+}
+*/

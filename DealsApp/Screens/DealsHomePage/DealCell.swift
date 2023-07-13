@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DealCell: View {
-    @State var deal:Deal
+    let deal:Deal
     
     var body: some View {
         HStack(alignment: .center) {

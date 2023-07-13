@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State private var path = NavigationPath()
     @StateObject var viewModel = HomeViewModel()
     
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $path) {
             VStack(spacing: -40) {
                 ZStack(alignment: .topLeading) {
                     Rectangle()
@@ -25,7 +26,7 @@ struct HomeView: View {
                         .offset(x: 10)
                 }
                 NavigationLink {
-                    SearchView(viewModel:viewModel)
+                    SearchView(viewModel:viewModel, path: $path)
                 } label: {
                     HStack(spacing: 10) {
                         Image(systemName: "magnifyingglass")
@@ -39,28 +40,41 @@ struct HomeView: View {
                     .cornerRadius(15)
                 }
                 .offset(y:-95)
-                ScrollView {
-                    Text("Recommended Deals")
-                        .font(.system(size:30))
-                        .foregroundColor(Color("AmazonDBlue"))
-                        .bold()
-                    recommendListView(viewModel.data)
-                }
                 Spacer()
+                ScrollView {
+                    VStack {
+                        Text("Recommended Deals")
+                            .font(.system(size:30))
+                            .foregroundColor(Color("AmazonDBlue"))
+                            .bold()
+                        
+                        switch viewModel.status {
+                        case .initial, .loading:
+                            Text("Loading...")
+                        case .loaded:
+                            recommendListView(viewModel.data)
+                        case .error:
+                            Text("Error")
+                        }
+                    }
+                    .padding([.top])
+                }
             }
             .background(Color("AmazonGray"))
             .buttonStyle(PlainButtonStyle())
+            .navigationDestination(for: Deal.self) { deal in
+                DealView(deal: deal, viewModel: viewModel, path: $path)
+            }
         }
         .onAppear {
             viewModel.getDeals()
+            UINavigationBar.appearance().barTintColor = UIColor(Color("AmazonDBlue"))
         }
     }
     
     private func recommendListView(_ deals: [Deal]) -> some View {
-        ForEach(0..<10) {i in
-            NavigationLink {
-                DealView(deal: deals[i])
-            } label: {
+        ForEach(0 ..< 15 ) { i in
+            NavigationLink(value: deals[i]) {
                 DealCell(deal: deals[i])
             }
         }

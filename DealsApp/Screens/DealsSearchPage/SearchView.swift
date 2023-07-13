@@ -10,6 +10,7 @@ import SwiftUI
 struct SearchView: View {
     @ObservedObject var viewModel:HomeViewModel
     @State var searchText = ""
+    @Binding var path:NavigationPath
     
     var body: some View {
         NavigationView {
@@ -17,7 +18,7 @@ struct SearchView: View {
                 List {
                     ForEach(searchResults) { deal in
                             DealCell(deal:deal)
-                            .background(NavigationLink("", destination: DealView(deal:deal)).opacity(0))
+                            .background(NavigationLink("", destination: DealView(deal:deal, viewModel: viewModel, path: $path)).opacity(0))
                             .listRowBackground(Color("AmazonGray"))
                     }
                 }
@@ -42,10 +43,9 @@ struct SearchView: View {
     }
 }
 
-
+/*
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
         SearchView(viewModel:HomeViewModel(), searchText:"")
     }
-}
-
+}*/
